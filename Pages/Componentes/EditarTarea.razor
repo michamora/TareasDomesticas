@@ -1,0 +1,137 @@
+@page "/editar/{tareaId:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using TareasDomesticas.Models
+
+
+<link href="css/styles.css" rel="stylesheet" />
+
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .card {
+        width: 400px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        background-color: rgba(212, 50, 112, 0.274);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .btn-update {
+        background-color: rgba(212, 50, 112, 0.274);
+        color: white;
+    }
+</style>
+
+<div class="container">
+    <div class="card">
+        <h3 class="text-center">Tarea</h3>
+
+        <!-- Botón de regreso -->
+         <button class="btn btn-sm btn-custom position-absolute top-0 start-0 m-2" @onclick="RegresarATareas">
+               <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+</svg>
+            </button>
+        @if (tarea != null)
+        {
+            <div>
+                <div class="form-group">
+                    <label>Descripción:</label>
+                    <input type="text" @bind="tarea.descripcion" class="form-control" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Fecha:</label>
+                    <input type="text" @bind="tarea.fecha" class="form-control" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Encargado:</label>
+                    <input type="text" @bind="tarea.nombre" class="form-control" readonly />
+                </div>
+                  <div class="form-group">
+                    <label>Estado:</label><br />
+                    <input type="radio" id="PorHacer" name="estado" value="Por Hacer" checked="@IsPorHacerSelected()" @onclick='() => SetEstado("Por Hacer")' disabled="@PorHacerDisabled">
+                    <label for="PorHacer" style="margin-right: 10px;">Por Hacer</label>
+
+                    <input type="radio" id="EnProceso" name="estado" value="En Proceso" checked="@IsEnProcesoSelected()" @onclick='() => SetEstado("En Proceso")' disabled="@EnProcesoDisabled">
+                    <label for="EnProceso" style="margin-right: 10px;">En Proceso</label>
+
+                    <input type="radio" id="Terminada" name="estado" value="Terminada" checked="@IsTerminadaSelected()" @onclick='() => SetEstado("Terminada")'> 
+                    <label for="Terminada" style="margin-right: 10px;">Terminada</label>
+                </div>
+                <button class="btn btn-custom btn-block" @onclick="ActualizarTarea" disabled="@IsBotonActualizarDisabled()">Actualizar Tarea</button>
+            </div>
+        }
+        else
+        {
+            <p>Cargando tarea...</p>
+        }
+    </div>
+</div>
+
+@code {
+    TareasDto tarea;
+    string estadoInicial;
+
+    [Parameter]
+    public int tareaId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarTarea(tareaId);
+         estadoInicial = tarea.estado;
+    }
+
+    private async Task CargarTarea(int tareaId)
+    {
+        tarea = await Http.GetFromJsonAsync<TareasDto>($"api/Tareas/{tareaId}");
+    }
+
+    private async Task ActualizarTarea()
+    {
+        await Http.PutAsJsonAsync($"api/Tareas/{tareaId}", tarea);
+        NavigationManager.NavigateTo("/tareas"); // Navegar de vuelta al componente anterior después de actualizar la tarea
+    }
+
+    private void SetEstado(string estado)
+    {
+        tarea.estado = estado;
+    }
+
+    private bool IsPorHacerSelected()
+    {
+        return tarea.estado == "Por Hacer";
+    }
+
+    private bool IsEnProcesoSelected()
+    {
+        return tarea.estado == "En Proceso";
+    }
+
+    private bool IsTerminadaSelected()
+    {
+        return tarea.estado == "Terminada";
+    }
+
+    private bool IsBotonActualizarDisabled()
+{
+   return estadoInicial == "Terminada" && tarea.estado == "Terminada";
+}
+
+private void RegresarATareas()
+    {
+        NavigationManager.NavigateTo("/tareas");
+    }
+
+    private bool PorHacerDisabled => tarea.estado == "En Proceso" || tarea.estado == "Terminada";
+    private bool EnProcesoDisabled => tarea.estado == "Terminada";
+}
