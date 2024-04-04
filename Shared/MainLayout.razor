@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@using Blazored.Toast.Configuration
 
 <PageTitle>TareasDomesticas</PageTitle>
 
@@ -17,3 +18,10 @@
         </article>
     </main>
 </div>
+<BlazoredToasts
+                Timeout="3"
+                SuccessClass="success-toast-override"
+                SuccessIcon="✔️"
+                WarningIcon="⚠️"
+                InfoIcon="📝"
+                ErrorIcon="❌" />

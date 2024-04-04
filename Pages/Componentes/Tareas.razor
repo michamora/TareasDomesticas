@@ -2,33 +2,53 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using TareasDomesticas.Models
-
+@using System.Threading.Tasks;
+@using System.Threading;
+@inject Blazored.Toast.Services.IToastService ToastService
+@inject IToastService Toast
 
 <link href="css/styles.css" rel="stylesheet" />
+
+
+
+
 
 <style>
     .bold-text {
         font-weight: bold;
     }
     .card-label {
-    font-weight: bold;
-    color: rgb(27, 27, 27); /* Cambia el color según tus preferencias */
-    /* Agrega otros estilos según sea necesario */
-}
+        font-weight: bold;
+        color: rgb(27, 27, 27); /* Cambia el color según tus preferencias */
+        /* Agrega otros estilos según sea necesario */
+    }
 </style>
-    
 
 <div class="container">
-    <div class="card shadow-lg mt-3">
-        <div class="card-header" style="background-color: rgba(212, 50, 112, 0.274);">
+    <div class="card shadow-lg mt-3 border-dark">
+        <div class="card-header" style="background-color: rgba(253, 252, 166, 0.705);">
             <div class="card text-center" style="background-color: rgba(9, 92, 247, 0.041);">
                 <h3>
                     <img src="Logo/logo.png" alt="Logo" style="max-width: 150px; vertical-align: middle; margin-right: 10px;" />
                     Tareas Asignadas 
                 </h3>
             </div>
+            <!-- Agregar enlace para Tareas Terminadas -->
+           <!--<div class="text-left mt-2">
+            <span class="mr-2">Tareas Terminadas</span>
+    <a href="/tareas-terminadas" class="btn btn-success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ui-checks-grid" viewBox="0 0 16 16">
+            <path d="M2 10h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1m9-9h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1m0 9a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zm0-10a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM2 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2zm7 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2zM0 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5.354.854a.5.5 0 1 0-.708-.708L3 3.793l-.646-.647a.5.5 0 1 0-.708.708l1 1a.5.5 0 0 0 .708 0z"/>
+        </svg>
+    </a>
+    
+</div>-->
+
+
+
+
         </div>
-        <div class="card-body" style="background-color:rgba(201, 141, 171, 0.377);">
+        <div class="card-body" style="background-color:rgba(253, 252, 166, 0.705);">
             <div class="row">
                 @if (tareas == null)
                 {
@@ -40,57 +60,126 @@
                 }
                 else
                 {
-                    @foreach (var tarea in tareas.Select((value, index) => new { Value = value, Index = index }))
+                    @foreach (var tarea in tareas.Where(t => t.estado != "Terminada"))
                     {
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card border-dark">
-                                <div class="card-body" style="background-color: @(GetBackgroundColor(tarea.Value.estado))">
+                        <div class="col-md-6 col-lg-4 mb-4 ">
+                        
+                             <div class="card border-dark">
+                                <div class="card-body" style="background-color: @(GetBackgroundColor(tarea.estado))">
 
-                                   <p class="card-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2"/> </svg> <span class="card-label">Descripción:</span> <span>@tarea.Value.descripcion</span></p>
+                                   <p class="card-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2"/> </svg> <span class="card-label">Descripción:</span> <span>@tarea.descripcion</span></p>
                                    <p class="card-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-week-fill" viewBox="0 0 16 16">
-  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5m9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5M8.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM3 10.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
-</svg>   <span class="card-label">Fecha:</span> <span>@tarea.Value.fecha</span></p>
+  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5m9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5M8.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-6.5 2.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm0 3v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5z"/>
+</svg>   <span class="card-label">Fecha:</span> <span>@tarea.fecha</span></p>
 <p class="card-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-</svg>    <span class="card-label">Encargado:</span> <span>@tarea.Value.nombre</span></p>
+</svg>    <span class="card-label">Encargado:</span> <span>@tarea.nombre</span></p>
+
 <p class="card-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-segmented-nav" viewBox="0 0 16 16">
   <path d="M0 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm6 3h4V5H6zm9-1V6a1 1 0 0 0-1-1h-3v4h3a1 1 0 0 0 1-1"/>
-</svg><span class="card-label"> Estado:</span> <span>@GetEstado(tarea.Value.estado)</span></p>
+</svg><span class="card-label"> Estado:</span> <span>@GetEstado(tarea.estado) @if (tarea.estado == "En Proceso")
+{
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hourglass-split" viewBox="0 0 16 16">
+        <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"/>
+    </svg>
+}
+else if (tarea.estado == "Por Hacer")
+{
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hourglass-top" viewBox="0 0 16 16">
+        <path d="M2 14.5a.5.5 0 0 0 .5.5h11a.5.5 0 1 0 0-1h-1v-1a4.5 4.5 0 0 0-2.557-4.06c-.29-.139-.443-.377-.443-.59v-.7c0-.213.154-.451.443-.59A4.5 4.5 0 0 0 12.5 3V2h1a.5.5 0 0 0 0-1h-11a.5.5 0 0 0 0 1h1v1a4.5 4.5 0 0 0 2.557 4.06c.29.139.443.377.443.59v.7c0 .213-.154.451-.443.59A4.5 4.5 0 0 0 3.5 13v1h-1a.5.5 0 0 0-.5.5m2.5-.5v-1a3.5 3.5 0 0 1 1.989-3.158c.533-.256 1.011-.79 1.011-1.491v-.702s.18.101.5.101.5-.1.5-.1v.7c0 .701.478 1.236 1.011 1.492A3.5 3.5 0 0 1 11.5 13v1z"/>
+    </svg>
+}</span></p>
+
 
                                      <!-- Botones -->
                                     <div class="d-flex justify-content-between mb-2">
                                         <!-- Agregar botón "Tomar Tarea" -->
-                                        @if (tarea.Value.estado == "En Proceso" || tarea.Value.estado == "Terminada")
+                                        @if (tarea.estado == "En Proceso" || tarea.estado == "Terminada")
                                         {
-                                            <button class="btn btn-tomar btn-sm mb-2" disabled><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                                            <button class="btn btn-success btn-sm mb-2" title="Esta tarea ya fue tomada" disabled><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
   <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"/>
   <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
 </svg> Tomar Tarea</button>
                                         }
                                         else
                                         {
-                                            <button class="btn btn-tomar btn-sm mb-2" @onclick="() => TomarTarea(tarea.Value.tareaId)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
-  <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-</svg> Tomar Tarea</button>
+                                          <button class="btn btn-success btn-sm mb-2" title="Tomar tarea" @onclick="() => { TomarTarea(tarea.tareaId); MostrarModal = true; }">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
+        <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+    </svg> Tomar Tarea
+</button>
+
+
                                         }
 
                                         <!-- Botón "Ver Tarea" -->
-                                        <button class="btn btn-custom btn-sm mb-2" @onclick="() => VerTareas(tarea.Value.tareaId)" disabled="@IsBotonVerDisabled(tarea.Value.estado)">Ver Tarea <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+                                        @if (tarea.tareaId == TareaIdSeleccionada&& cargando)
+{
+    <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+
+                                        <button class="btn btn-custom btn-sm mb-2" title="Ver detalles de la tarea" @onclick="() => VerTareas(tarea.tareaId)" disabled="@IsBotonVerDisabled(tarea.estado)">Ver Tarea <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
 </svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
                     }
                 }
             </div>
         </div>
     </div>
 </div>
+@if (MostrarModal)
+{
+    var tareaSeleccionada = tareas.FirstOrDefault(t => t.tareaId == TareaIdSeleccionada);
+    if (tareaSeleccionada != null)
+    {
+        <div class="modal fade show" id="modalConfirmarTomarTarea" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="display: block; background: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Confirmar Acción</h5>
+                        <button type="button" class="close close-red close-square" title="Cerrar ventana" @onclick="() => MostrarModal = false">
+                            <span aria-hidden="true" class="close-icon">&times;</span>
+                        </button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <p>Por favor, ingrese el código de acceso  para tomar esta tarea:</p>
+                        <input type="text" class="form-control" @bind="codigoAcceso">
+                        @if (!string.IsNullOrEmpty(MensajeError))
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @MensajeError
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancelar" title="Cancelar" @onclick="() => MostrarModal = false">Cancelar</button>
+                        <!-- Botón "Confirmar" con la llamada a ConfirmarTomarTarea -->
+                        <button type="button" class="btn btn-success" title="Confirmar codigo" @onclick="() => ConfirmarTomarTarea(tareaSeleccionada.tareaId)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
+        <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+    </svg> Confirmar</button>
+                    </div>
+                </div>   
+            </div>
+        </div>
+    }
+}
 
 @code {
     List<TareasDto> tareas;
+    bool MostrarModal = false;
+    int TareaIdSeleccionada;
+    string codigoAcceso;
+    string MensajeError = "";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,23 +191,96 @@
         tareas = await Http.GetFromJsonAsync<List<TareasDto>>("api/Tareas");
     }
 
-    private void VerTareas(int tareaId)
+   private bool cargando = false;
+
+private async Task VerTareas(int tareaId)
+{
+    // Mostrar el spinner de carga
+     TareaIdSeleccionada = tareaId;
+    cargando = true;
+
+    // Esperar 2 segundos (2000 milisegundos) simulando una carga
+    await Task.Delay(2000);
+
+    if (await VerificarElementoExistente(tareaId))
     {
         NavigationManager.NavigateTo($"/editar/{tareaId}");
     }
-
-    private async Task TomarTarea(int tareaId)
+    else
     {
-        // Realizar lógica para cambiar el estado de "Por hacer" a "En proceso"
-        // Por ejemplo:
-        var tarea = tareas.FirstOrDefault(t => t.tareaId == tareaId);
-        if (tarea != null)
-        {
-            tarea.estado = "En Proceso";
-            // Realizar una solicitud PUT o POST al servidor para actualizar el estado de la tarea
-            await Http.PutAsJsonAsync($"api/Tareas/{tareaId}", tarea);
-        }
+         await Task.Delay(2000);
+
+    if (await VerificarElementoExistente(tareaId))
+    {
+        NavigationManager.NavigateTo($"/editar/{tareaId}");
     }
+    else
+    {
+        //Mensaje
+    }
+    }
+
+    // Ocultar el spinner de carga después de la verificación
+    cargando = false;
+}
+
+private async Task<bool> VerificarElementoExistente(int tareaId)
+{
+    // Aquí puedes implementar la lógica para verificar si el elemento existe.
+    // Por ejemplo, puedes buscar el elemento en la lista de tareas o realizar una solicitud a la API para verificar su existencia.
+    // Devuelve true si el elemento existe y false si no.
+    var tarea = tareas.FirstOrDefault(t => t.tareaId == tareaId);
+    return tarea != null;
+}
+
+
+    private void TomarTarea(int tareaId)
+    {
+        TareaIdSeleccionada = tareaId;
+        MostrarModal = true;
+        MensajeError = "";
+    }
+
+    
+    private async Task ConfirmarTomarTarea(int tareaId)
+{
+   var tarea = tareas.FirstOrDefault(t => t.tareaId == tareaId);
+    if (tarea == null)
+    {
+        // Si la tarea no existe, puedes mostrar un mensaje de error o realizar cualquier otra acción apropiada.
+        MensajeError = "La tarea seleccionada no existe.";
+        return; // Salir del método si la tarea no existe
+    }
+    
+    // Obtener el código de acceso de la tarea desde la API
+    string codigoAccesoTarea = await ObtenerCodigoAccesoTarea(tarea.tareaId);
+    
+    if (tarea != null && codigoAccesoTarea == codigoAcceso)
+    {
+        tarea.estado = "En Proceso";
+        // Realizar una solicitud PUT o POST al servidor para actualizar el estado de la tarea
+        await Http.PutAsJsonAsync($"api/Tareas/{tareaId}", tarea);
+        // Ocultar modal
+        MostrarModal = false;
+        // Limpiar el campo de código de acceso
+        codigoAcceso = "";
+        Toast.ShowSuccess("Tarea tomada correctamente");
+    }
+    else
+    {
+        MensajeError = "El código de acceso es incorrecto. Por favor, inténtalo de nuevo.";
+    }
+}
+
+private async Task<string> ObtenerCodigoAccesoTarea(int tareaId)
+{
+    // Aquí debes implementar la lógica para obtener el código de acceso de la tarea desde la API.
+    // Puedes hacer una solicitud HTTP GET a la API para obtener la tarea por su ID y luego extraer el código de acceso.
+    // Por ejemplo:
+    var tarea = await Http.GetFromJsonAsync<TareasDto>("api/Tareas/" + tareaId);
+    return tarea.codigoAcceso;
+}
+
 
     private string GetEstado(string estado)
     {
@@ -140,7 +302,7 @@
         switch (estado)
         {
             case "Por Hacer":
-                return "#fd8c6a";  // Naranja claro
+                return "#f71b1b6c;";  // Naranja claro
             case "En Proceso":
                 return "rgba(255, 255, 0, 0.5)"; // Amarillo claro
             case "Terminada":
@@ -155,4 +317,6 @@
     {
         return estado == "Por Hacer";
     }
+
+    
 }

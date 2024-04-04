@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 using TareasDomesticas.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http;
+using Blazored.Toast;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
+builder.Services.AddBlazoredToast();
 
 
 

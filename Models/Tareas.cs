@@ -10,6 +10,7 @@ public class Tareas
     public string? nombre { get; set; }
     public int empleadoId { get; set; }
     public string estado { get; set; }
+    public string codigoAcceso { get; set; }
 
    
 }

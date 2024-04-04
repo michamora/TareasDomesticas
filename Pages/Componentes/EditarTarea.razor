@@ -2,9 +2,12 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using TareasDomesticas.Models
-
+@inject Blazored.Toast.Services.IToastService ToastService
+@inject IToastService Toast
 
 <link href="css/styles.css" rel="stylesheet" />
+
+
 
 <style>
     .container {
@@ -19,7 +22,7 @@
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        background-color: rgba(212, 50, 112, 0.274);
+        background-color:  rgba(253, 252, 166, 0.705);
     }
 
     .form-group {
@@ -27,7 +30,7 @@
     }
 
     .btn-update {
-        background-color: rgba(212, 50, 112, 0.274);
+        background-color:  rgba(253, 252, 166, 0.705);
         color: white;
     }
 </style>
@@ -37,7 +40,7 @@
         <h3 class="text-center">Tarea</h3>
 
         <!-- Botón de regreso -->
-         <button class="btn btn-sm btn-custom position-absolute top-0 start-0 m-2" @onclick="RegresarATareas">
+         <button class="btn btn-sm btn-custom position-absolute top-0 start-0 m-2" title="Regresar a las tareas" @onclick="RegresarATareas">
                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
 </svg>
@@ -59,8 +62,7 @@
                 </div>
                   <div class="form-group">
                     <label>Estado:</label><br />
-                    <input type="radio" id="PorHacer" name="estado" value="Por Hacer" checked="@IsPorHacerSelected()" @onclick='() => SetEstado("Por Hacer")' disabled="@PorHacerDisabled">
-                    <label for="PorHacer" style="margin-right: 10px;">Por Hacer</label>
+                    
 
                     <input type="radio" id="EnProceso" name="estado" value="En Proceso" checked="@IsEnProcesoSelected()" @onclick='() => SetEstado("En Proceso")' disabled="@EnProcesoDisabled">
                     <label for="EnProceso" style="margin-right: 10px;">En Proceso</label>
@@ -68,7 +70,7 @@
                     <input type="radio" id="Terminada" name="estado" value="Terminada" checked="@IsTerminadaSelected()" @onclick='() => SetEstado("Terminada")'> 
                     <label for="Terminada" style="margin-right: 10px;">Terminada</label>
                 </div>
-                <button class="btn btn-custom btn-block" @onclick="ActualizarTarea" disabled="@IsBotonActualizarDisabled()">Actualizar Tarea</button>
+                <button class="btn btn-success btn-block" title="Actualizar estado de la tarea" @onclick="ActualizarTarea" disabled="@IsBotonActualizarDisabled()">Actualizar Tarea</button>
             </div>
         }
         else
@@ -100,6 +102,7 @@
     {
         await Http.PutAsJsonAsync($"api/Tareas/{tareaId}", tarea);
         NavigationManager.NavigateTo("/tareas"); // Navegar de vuelta al componente anterior después de actualizar la tarea
+        Toast.ShowSuccess("Tarea completada");
     }
 
     private void SetEstado(string estado)

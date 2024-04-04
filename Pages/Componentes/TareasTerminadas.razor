@@ -1,0 +1,84 @@
+@page "/tareas-terminadas"
+@inject NavigationManager NavigationManager
+@using TareasDomesticas.Models
+@inject HttpClient Http
+
+<link href="css/styles.css" rel="stylesheet" />
+
+<style>
+    .bold-text {
+        font-weight: bold;
+    }
+    .card-label {
+        font-weight: bold;
+        color: rgb(27, 27, 27); /* Cambia el color según tus preferencias */
+        /* Agrega otros estilos según sea necesario */
+    }
+</style>
+
+<div class="container">
+    <div class="card shadow-lg mt-3">
+        <div class="card-header" style="background-color: rgba(212, 50, 112, 0.274);">
+            <div class="card text-center" style="background-color: rgba(9, 92, 247, 0.041);">
+                <h3>
+                    <img src="Logo/logo.png" alt="Logo" style="max-width: 150px; vertical-align: middle; margin-right: 10px;" />
+                    Tareas Terminadas
+                </h3>
+            </div>
+        </div>
+        <div class="card-body" style="background-color:rgba(201, 141, 171, 0.377);">
+            <div class="row">
+                <!-- Aquí mostrar las tareas terminadas -->
+              @if (tareasTerminadas == null || tareasTerminadas.Count == 0)
+    {
+        <p>No hay tareas terminadas.</p>
+    }
+    else
+    {
+        @foreach (var tarea in tareasTerminadas.Where(t => t.estado == "Terminada"))
+        {
+            <div class="col-md-6 col-lg-4 mb-4 ">
+            <div class="card border-dark">
+                <div class="card-body " style="background-color:rgba(76, 175, 80, 0.5); ">
+
+                   <p class="card-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2"/> </svg> <span class="card-label">Descripción:</span> <span>@tarea.descripcion</span></p>
+                                   <p class="card-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-week-fill" viewBox="0 0 16 16">
+  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5m9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5M8.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-6.5 2.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm0 3v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5z"/>
+</svg>   <span class="card-label">Fecha:</span> <span>@tarea.fecha</span></p>
+<p class="card-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+</svg>    <span class="card-label">Encargado:</span> <span>@tarea.nombre</span></p>
+
+                    <p class="card-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-segmented-nav" viewBox="0 0 16 16">
+  <path d="M0 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm6 3h4V5H6zm9-1V6a1 1 0 0 0-1-1h-3v4h3a1 1 0 0 0 1-1"/>
+</svg> Estado: Terminada</p>
+                </div>
+            </div>
+            </div>
+        }
+    }
+     </div>
+            <button class="btn btn-custom" @onclick="VolverATareasAsignadas">Volver a Tareas Asignadas</button>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    List<TareasDto> tareasTerminadas;
+    // Método para navegar de regreso a Tareas Asignadas
+    private void VolverATareasAsignadas()
+    {
+        NavigationManager.NavigateTo("/tareas");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarTareas();
+    }
+
+    public async Task CargarTareas()
+    {
+        tareasTerminadas = await Http.GetFromJsonAsync<List<TareasDto>>("api/Tareas");
+    }
+}

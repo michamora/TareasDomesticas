@@ -9,7 +9,7 @@
 .btn-custom:hover {
 
     color: #ffffff; 
-    background-color:  #3750a18a; 
+    background-color:  #2a586d; 
     border-color: #0a1127; 
 }
 
@@ -69,3 +69,71 @@
   }
   
 
+  .disable-click {
+    pointer-events: none;
+}
+
+.close-red {
+  color: #ffffff;
+  background-color: #eb1616; 
+  border-color: #ffffff00; 
+  /* Ajusta otros estilos según sea necesario */
+}
+
+.close-red:hover {
+  color: #ffffff;
+  background-color: #b31616; 
+  /* Ajusta otros estilos según sea necesario */
+}
+
+.close-square {
+  width: 35px; /* Ajusta el valor según sea necesario */
+  height: 35px; /* Ajusta el valor según sea necesario */
+  padding: 0; /* Ajusta el relleno según sea necesario */
+  /* Otros estilos según sea necesario */
+}
+
+.close-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+
+.btn-cancelar {
+  color: #ffffff; 
+  background-color:  #eb1616; 
+  border-color: #291008; 
+}
+
+/* Cambiar el color de hover del botón */
+.btn-cancelar:hover {
+
+  color: #ffffff; /* Cambia el color del texto */
+  background-color:  #fc4949;  /* Cambia el color de fondo en hover */
+  border-color: #291008;  /* Cambia el color del borde */
+}
+
+.tarea-terminada {
+  background-color: rgba(76, 175, 80, 0.5); /* Verde claro */
+}
+
+.btn-success {
+  color: #ffffff; 
+  background-color:  #398d59; 
+  border-color: #09130a; 
+}
+
+/* Cambiar el color de hover del botón */
+.btn-success:hover {
+
+  color: #ffffff; /* Cambia el color del texto */
+  background-color:  #285f3d;   /* Cambia el color de fondo en hover */
+  border-color: #09130a;   /* Cambia el color del borde */
+}
+
+.btn-prueba{
+color: #ff9b58af;
+}
