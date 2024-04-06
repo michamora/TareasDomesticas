@@ -17,8 +17,7 @@
     }
     .card-label {
         font-weight: bold;
-        color: rgb(27, 27, 27); /* Cambia el color según tus preferencias */
-        /* Agrega otros estilos según sea necesario */
+        color: rgb(27, 27, 27); 
     }
 </style>
 
@@ -41,9 +40,6 @@
     </a>
     
 </div>-->
-
-
-
 
         </div>
         <div class="card-body" style="background-color:rgba(253, 252, 166, 0.705);">
@@ -224,9 +220,6 @@ private async Task VerTareas(int tareaId)
 
 private async Task<bool> VerificarElementoExistente(int tareaId)
 {
-    // Aquí puedes implementar la lógica para verificar si el elemento existe.
-    // Por ejemplo, puedes buscar el elemento en la lista de tareas o realizar una solicitud a la API para verificar su existencia.
-    // Devuelve true si el elemento existe y false si no.
     var tarea = tareas.FirstOrDefault(t => t.tareaId == tareaId);
     return tarea != null;
 }
@@ -245,9 +238,9 @@ private async Task<bool> VerificarElementoExistente(int tareaId)
    var tarea = tareas.FirstOrDefault(t => t.tareaId == tareaId);
     if (tarea == null)
     {
-        // Si la tarea no existe, puedes mostrar un mensaje de error o realizar cualquier otra acción apropiada.
+       
         MensajeError = "La tarea seleccionada no existe.";
-        return; // Salir del método si la tarea no existe
+        return; 
     }
     
     // Obtener el código de acceso de la tarea desde la API
@@ -272,9 +265,6 @@ private async Task<bool> VerificarElementoExistente(int tareaId)
 
 private async Task<string> ObtenerCodigoAccesoTarea(int tareaId)
 {
-    // Aquí debes implementar la lógica para obtener el código de acceso de la tarea desde la API.
-    // Puedes hacer una solicitud HTTP GET a la API para obtener la tarea por su ID y luego extraer el código de acceso.
-    // Por ejemplo:
     var tarea = await Http.GetFromJsonAsync<TareasDto>("api/Tareas/" + tareaId);
     return tarea.codigoAcceso;
 }

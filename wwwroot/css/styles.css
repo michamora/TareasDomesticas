@@ -1,11 +1,11 @@
-/* Cambiar el color del botón */
+
 .btn-custom {
-    color: #ffffff; /* Cambia el color del texto */
-    background-color:  #3750a1; /* Cambia el color de fondo en hover */
-    border-color: #0a1127; /* Cambia el color del borde */
+    color: #ffffff; 
+    background-color:  #3750a1; 
+    border-color: #0a1127; 
 }
 
-/* Cambiar el color de hover del botón */
+
 .btn-custom:hover {
 
     color: #ffffff; 
@@ -19,12 +19,12 @@
     border-color: #8f3419; 
 }
 
-/* Cambiar el color de hover del botón */
+
 .btn-tomar:hover {
 
-    color: #ffffff; /* Cambia el color del texto */
-    background-color:  #f5875c; /* Cambia el color de fondo en hover */
-    border-color: #8f3419; /* Cambia el color del borde */
+    color: #ffffff; 
+    background-color:  #f5875c; 
+    border-color: #8f3419; 
 }
 
 
@@ -77,20 +77,20 @@
   color: #ffffff;
   background-color: #eb1616; 
   border-color: #ffffff00; 
-  /* Ajusta otros estilos según sea necesario */
+  
 }
 
 .close-red:hover {
   color: #ffffff;
   background-color: #b31616; 
-  /* Ajusta otros estilos según sea necesario */
+  
 }
 
 .close-square {
-  width: 35px; /* Ajusta el valor según sea necesario */
-  height: 35px; /* Ajusta el valor según sea necesario */
-  padding: 0; /* Ajusta el relleno según sea necesario */
-  /* Otros estilos según sea necesario */
+  width: 35px; 
+  height: 35px; 
+  padding: 0; 
+  
 }
 
 .close-icon {
@@ -108,12 +108,12 @@
   border-color: #291008; 
 }
 
-/* Cambiar el color de hover del botón */
+
 .btn-cancelar:hover {
 
-  color: #ffffff; /* Cambia el color del texto */
-  background-color:  #fc4949;  /* Cambia el color de fondo en hover */
-  border-color: #291008;  /* Cambia el color del borde */
+  color: #ffffff; 
+  background-color:  #fc4949;  
+  border-color: #291008;  
 }
 
 .tarea-terminada {
@@ -126,12 +126,12 @@
   border-color: #09130a; 
 }
 
-/* Cambiar el color de hover del botón */
+
 .btn-success:hover {
 
-  color: #ffffff; /* Cambia el color del texto */
-  background-color:  #285f3d;   /* Cambia el color de fondo en hover */
-  border-color: #09130a;   /* Cambia el color del borde */
+  color: #ffffff; 
+  background-color:  #285f3d;   
+  border-color: #09130a;   
 }
 
 .btn-prueba{
